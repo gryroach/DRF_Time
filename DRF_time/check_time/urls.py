@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import time_is_correct
+from .views import time_is_right
 
 urlpatterns = [
-    path('time/', time_is_correct)
+    path('time_is_right/', time_is_right),
 ]
