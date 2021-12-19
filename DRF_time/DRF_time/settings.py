@@ -11,21 +11,28 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+DIR = Path(__file__).resolve().parent.parent.parent
 
+root = environ.Path(__file__) - 3  # get root of the project
+env = environ.Env()
+environ.Env.read_env(os.path.join(DIR, '.env'))     # reading .env file
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!vf9_^qdlwko@qqq-ilxp7%7-$s=+d5-&upjn275tsisb^9a3%'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(' ')
 
 
 # Application definition
@@ -79,11 +86,11 @@ WSGI_APPLICATION = 'DRF_time.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'time',
-        'USER': 'user',
-        'PASSWORD': '123456',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'NAME': env.str('POSTGRES_DB', BASE_DIR / 'db.sqlite3'),
+        'USER': env.str('POSTGRES_USER', 'user'),
+        'PASSWORD': env.str('POSTGRES_PASSWORD', 'password'),
+        'HOST': env.get_value('POSTGRES_HOST', cast=None, default='localhost'),
+        'PORT': env.int('POSTGRES_PORT', '5432'),
     }
 }
 

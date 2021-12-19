@@ -1,0 +1,4 @@
+/.env
+/.idea
+/venv
+/DRF_time/check_time/migrations/
