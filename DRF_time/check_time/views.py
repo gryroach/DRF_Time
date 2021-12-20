@@ -27,7 +27,7 @@ def time_is_right(request):
                                 status=status.HTTP_400_BAD_REQUEST)
         except exceptions.APIException:
             return HttpResponseBadRequest("The server could not understand the request due to invalid syntax.")
-    elif request.method == 'GET':
+    else:
         return HttpResponseBadRequest('The server only provides post-requests in json format. '
                                       'Example: { "time": "12:00" }')
 
@@ -53,7 +53,7 @@ def time_plus_delta_is_right(request):
                                 status=status.HTTP_400_BAD_REQUEST)
         except exceptions.APIException:
             return HttpResponseBadRequest("The server could not understand the request due to invalid syntax.")
-    elif request.method == 'GET':
+    else:
         return HttpResponseBadRequest('The server only provides post-requests in json format. '
                                       'Example: { "delta": "01:30", "time": "12:00" }')
 
