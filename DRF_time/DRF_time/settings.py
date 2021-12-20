@@ -96,7 +96,7 @@ DATABASES = {
 
 REST_FRAMEWORK = {
     'TIME_FORMAT':
-        "%H:%M",
+        "%H:%M:%S",
 }
 
 
