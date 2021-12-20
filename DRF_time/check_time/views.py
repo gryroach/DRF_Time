@@ -1,10 +1,12 @@
+import datetime
+
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status, exceptions
 from rest_framework.parsers import JSONParser
 from .serializers import CheckTimeSerializer, CheckTimePlusDeltaSerializer
 from django.utils import timezone
-from datetime import timedelta, time
+from datetime import timedelta
 
 
 @csrf_exempt
@@ -33,17 +35,11 @@ def time_plus_delta_is_right(request):
             if serializer.is_valid():
                 delta = timedelta(hours=int(serializer.data.get('delta').split(':')[0]),
                                   minutes=int(serializer.data.get('delta').split(':')[1]))
-
-                print(delta)
-                print((timezone.localtime() - delta).time())
-                print((timezone.localtime() + delta).time())
-                print(time(hour=int(serializer.data.get('time').split(':')[0]), minute=int(serializer.data.get('time').split(':')[1])))
-                # incorrect result where delta > 1h and localtime about 00:00
-                if (timezone.localtime() - delta).time() <= \
-                        time(hour=int(serializer.data.get('time').split(':')[0]),
-                             minute=int(serializer.data.get('time').split(':')[1])) <= \
-                        (timezone.localtime() + delta).time():
-
+                input_time = datetime.datetime(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
+                                               day=timezone.datetime.now().day,
+                                               hour=int(serializer.data.get('time').split(':')[0]),
+                                               minute=int(serializer.data.get('time').split(':')[1]))
+                if timezone.datetime.now() - delta <= input_time <= timezone.datetime.now() + delta:
                     return JsonResponse({'result': 'True'})
                 else:
                     return JsonResponse({'result': 'False'})
