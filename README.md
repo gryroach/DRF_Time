@@ -43,7 +43,7 @@ Example of data:
 }
 ```
 
-The check is carried out by comparing the entered data with the time on the server in accordance with the set time zone (by default Europe/Moscow). 
+The check is carried out by comparing the entered data with the time on the server in accordance with `http://worldtimeapi.org/` (by default Europe/Moscow). 
 
 The result is displayed in json format as follows:
 ```json
