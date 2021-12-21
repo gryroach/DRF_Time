@@ -1,18 +1,22 @@
 import datetime
+import requests
+from dateutil import parser
 
-from django.utils import timezone
+# url world time API
+url = 'http://worldtimeapi.org/api/timezone/Europe/Moscow/'
 
 
-def check_time(serializer, delta=False):
+def check_time_by_global(serializer, delta=False):
+    response_datetime = parser.parse(requests.request("GET", url).json()['datetime'])
     if delta:
         delta = datetime.timedelta(hours=int(serializer.data.get('delta').split(':')[0]),
                                    minutes=int(serializer.data.get('delta').split(':')[1]),
                                    seconds=int(serializer.data.get('delta').split(':')[2]))
-        input_time = datetime.datetime(year=timezone.datetime.now().year, month=timezone.datetime.now().month,
-                                       day=timezone.datetime.now().day,
+        input_time = datetime.datetime(year=response_datetime.year, month=response_datetime.month,
+                                       day=response_datetime.day,
                                        hour=int(serializer.data.get('time').split(':')[0]),
                                        minute=int(serializer.data.get('time').split(':')[1]),
                                        second=int(serializer.data.get('time').split(':')[2]))
-        return abs(timezone.datetime.now() - input_time) <= delta
+        return abs(response_datetime.timestamp() - input_time.timestamp()) <= delta.total_seconds()
     else:
-        return serializer.data.get('time') == timezone.localtime().strftime("%H:%M")
+        return serializer.data.get('time') == response_datetime.strftime("%H:%M")

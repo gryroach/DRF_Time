@@ -6,7 +6,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from .serializers import CheckTimeSerializer, CheckTimePlusDeltaSerializer
-from .utils import check_time
+from .utils import check_time_by_global
 
 
 @csrf_exempt
@@ -19,7 +19,7 @@ def time_is_right(request):
 
         serializer = CheckTimeSerializer(data=data)
         if serializer.is_valid():
-            if check_time(serializer):
+            if check_time_by_global(serializer):
                 return JsonResponse({'result': 'True'})
             else:
                 return JsonResponse({'result': 'False'})
@@ -39,7 +39,7 @@ def time_plus_delta_is_right(request):
 
         serializer = CheckTimePlusDeltaSerializer(data=data)
         if serializer.is_valid():
-            if check_time(serializer, delta=True):
+            if check_time_by_global(serializer, delta=True):
                 return JsonResponse({'result': 'True'})
             else:
                 return JsonResponse({'result': 'False'})
