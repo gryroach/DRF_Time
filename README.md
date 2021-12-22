@@ -18,24 +18,34 @@ Then install the dependencies:
 ```
 Once pip has finished downloading the dependencies:
 ```sh
+(env)$ touch .env
+(env)$ vim .env
+```
+Define the following environment variables:
+- ```DEBUG```
+- ```SECRET_KEY```
+- ```ALLOWED_HOSTS```
+- ```POSTGRES_DB```
+- ```POSTGRES_USER```
+- ```POSTGRES_PASSWORD```
+- ```POSTGRES_HOST```
+- ```POSTGRES_PORT```
+- ```REMOTE_TIME_URL```
+- ```DELTA_TIME_DEFAULT```
+
+After that, do the following:
+
+```sh
 (env)$ cd DRF_time
 (env)$ python manage.py runserver
 ```
 Navigate to `http://127.0.0.1:8000/` to see available urls.
 ## Work
-In order to check the time, you can use two methods:
-- Checking the time accurate to the minute - `http://127.0.0.1:8000/time-is-right/`
-- Checking the time with the specified accuracy (delta) - `http://127.0.0.1:8000/time-plus-delta-is-right/`
+In order to check the time you will use method with the specified accuracy (delta). If delta is not specified explicitly, then it is equal to `DELTA_TIME_DEFAULT` (%H:%M:%S format)
 
-Time is checked by post-request to the corresponding address. Data is sent in json format.
-Example of data:
-- `http://127.0.0.1:8000/time-is-right/`:
-```json
-{ 
-"time": "15:00" 
-}
-```
-- `http://127.0.0.1:8000/time-plus-delta-is-right/`:
+Time is checked by post-request to the address `http://127.0.0.1:8000/time-is-right/`. 
+
+Data is sent in json format. Example:
 ```json
 { 
 "time": "15:20:00",
@@ -43,11 +53,11 @@ Example of data:
 }
 ```
 
-The check is carried out by comparing the entered data with the time on the server in accordance with `http://worldtimeapi.org/` (by default Europe/Moscow). 
+The check is carried out by comparing the entered data with the time on the server in accordance with `REMOTE_TIME_URL`. 
 
 The result is displayed in json format as follows:
 ```json
 { 
-"result": "True" 
+"result": "true" 
 }
 ```
