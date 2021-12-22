@@ -5,7 +5,7 @@ from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
-from .serializers import CheckTimeSerializer, CheckTimePlusDeltaSerializer
+from .serializers import CheckTimePlusDeltaSerializer
 from .utils import check_time_by_global, env
 
 
@@ -14,14 +14,14 @@ def time_is_right(request):
     if request.method == 'POST':
         try:
             data = JSONParser().parse(request)
-        except exceptions.APIException:
+        except exceptions.ParseError:
             return HttpResponseBadRequest("The server could not understand the request due to invalid syntax.")
 
         if 'delta' not in data:
             data['delta'] = env.str('DELTA_TIME_DEFAULT')
         serializer = CheckTimePlusDeltaSerializer(data=data)
         if serializer.is_valid():
-            return JsonResponse({'result': check_time_by_global(serializer, delta=True)})
+            return JsonResponse({'result': check_time_by_global(serializer)})
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
         return HttpResponseBadRequest('The server only provides post-requests in json format. '
