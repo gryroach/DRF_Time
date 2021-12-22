@@ -39,10 +39,7 @@ def time_plus_delta_is_right(request):
 
         serializer = CheckTimePlusDeltaSerializer(data=data)
         if serializer.is_valid():
-            if check_time_by_global(serializer, delta=True):
-                return JsonResponse({'result': 'True'})
-            else:
-                return JsonResponse({'result': 'False'})
+            return JsonResponse({'result': check_time_by_global(serializer, delta=True)})
         return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     else:
         return HttpResponseBadRequest('The server only provides post-requests in json format. '
